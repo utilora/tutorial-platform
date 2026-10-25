@@ -4,7 +4,9 @@ services:
     runtime: node
     plan: free
     region: singapore
-    buildCommand: npm ci && npm run db:deploy && npm run build
+    buildCommand: npm ci && npm run build
+    preDeployCommand: npm run db:deploy
+    initialDeployHook: npm run db:seed
     startCommand: npm start
     healthCheckPath: /
     envVars:
@@ -17,6 +19,10 @@ services:
       - key: AUTH_SECRET
         generateValue: true
       - key: APP_URL
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
         sync: false
 databases:
   - name: tutorial-platform-db
