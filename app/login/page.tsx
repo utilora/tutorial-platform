@@ -1,0 +1,2 @@
+import Link from "next/link"; import { login } from "@/lib/actions/auth"; import { AuthForm } from "@/components/AuthForm";
+export default async function Login({searchParams}:{searchParams:Promise<{next?:string}>}){const {next}=await searchParams;return <section className="auth-page"><div className="panel"><h1>登录</h1><p>登录后即可收藏教程并管理个人资料。</p><AuthForm action={login} kind="login" next={next}/><p><Link href="/forgot-password">忘记密码？</Link> · 还没有账号？<Link href="/register">注册</Link></p></div></section>}

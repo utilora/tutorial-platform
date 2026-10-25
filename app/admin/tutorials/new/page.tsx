@@ -1,0 +1,2 @@
+import { db } from "@/lib/db"; import { TutorialForm } from "@/components/TutorialForm";
+export default async function NewTutorial({searchParams}:{searchParams:Promise<{error?:string}>}){const [categories,tags,p]=await Promise.all([db.category.findMany({orderBy:{sortOrder:"desc"}}),db.tag.findMany({orderBy:{name:"asc"}}),searchParams]);return <><h1>新增教程</h1><div className="panel wide"><TutorialForm categories={categories} tags={tags} error={p.error}/></div></>}

@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: tutorial-platform
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm ci && npm run db:deploy && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tutorial-platform-db
+          property: connectionString
+      - key: AUTH_SECRET
+        generateValue: true
+      - key: APP_URL
+        sync: false
+databases:
+  - name: tutorial-platform-db
+    plan: free
+    region: singapore
+    databaseName: tutorial_platform
+    user: tutorial_platform

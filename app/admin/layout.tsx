@@ -1,0 +1,2 @@
+import Link from "next/link"; import { requireAdmin } from "@/lib/auth";
+export default async function AdminLayout({children}:{children:React.ReactNode}){await requireAdmin();return <div className="shell admin-layout"><aside className="admin-nav"><strong>管理后台</strong><Link href="/admin">数据概览</Link><Link href="/admin/tutorials">教程管理</Link><Link href="/admin/tutorials/new">新增教程</Link><Link href="/admin/taxonomies">分类与标签</Link><Link href="/">预览网站</Link></aside><section className="admin-main">{children}</section></div>}
