@@ -1,0 +1,21 @@
+services:
+  tutorial-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tutorial-platform-api
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    environment:
+      NODE_ENV: production
+      PORT: "3200"
+      HOSTNAME: "0.0.0.0"
+    ports:
+      - "127.0.0.1:3200:3200"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3200/api/v1/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
