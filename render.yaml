@@ -4,8 +4,7 @@ services:
     runtime: node
     plan: free
     region: singapore
-    buildCommand: npm ci && npm run build
-    preDeployCommand: npm run db:deploy
+    buildCommand: npm ci && npm run db:deploy && npm run build
     initialDeployHook: npm run db:seed
     startCommand: npm start
     healthCheckPath: /
