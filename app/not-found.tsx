@@ -1,0 +1,1 @@
+import Link from "next/link"; export default function NotFound(){return <section className="auth-page"><div className="panel"><h1>页面不存在</h1><p>内容可能已下架，或者地址输入有误。</p><Link className="button" href="/">返回首页</Link></div></section>}

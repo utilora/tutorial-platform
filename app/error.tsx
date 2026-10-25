@@ -1,0 +1,1 @@
+"use client"; export default function ErrorPage({reset}:{reset:()=>void}){return <section className="auth-page"><div className="panel"><h1>暂时无法加载</h1><p>请稍后重试。如果问题持续，请联系站点管理员。</p><button className="button" onClick={reset}>重新加载</button></div></section>}

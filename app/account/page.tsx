@@ -1,0 +1,2 @@
+"use client"; import { useActionState } from "react"; import { updateProfile } from "@/lib/actions/auth"; import { SubmitButton } from "@/components/SubmitButton";
+export default function Account(){const [s,a]=useActionState(updateProfile,{});return <section className="auth-page"><div className="panel"><h1>账户资料</h1><p>你只能修改自己的公开昵称。</p><form action={a} className="stack"><label>昵称<input name="name" maxLength={50}/></label><SubmitButton>保存资料</SubmitButton>{s.ok&&<p className="alert success">已保存</p>}{s.error&&<p className="alert error">{s.error}</p>}</form></div></section>}

@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum TutorialStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum TutorialType {
+  EXTERNAL
+  ARTICLE
+}
+
+model User {
+  id            String               @id @default(cuid())
+  email         String               @unique
+  name          String?
+  passwordHash  String
+  role          Role                 @default(USER)
+  favorites     Favorite[]
+  resetTokens   PasswordResetToken[]
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+}
+
+model Tutorial {
+  id                   String          @id @default(cuid())
+  slug                 String          @unique
+  title                String
+  summary              String          @db.VarChar(500)
+  coverUrl             String?
+  type                 TutorialType    @default(EXTERNAL)
+  externalUrl          String?
+  articleContent       String?         @db.Text
+  isPromoted           Boolean         @default(false)
+  promotionDisclosure String?          @db.VarChar(300)
+  notice               String?         @db.VarChar(500)
+  status               TutorialStatus  @default(DRAFT)
+  featured             Boolean         @default(false)
+  sortOrder            Int             @default(0)
+  publishedAt          DateTime?
+  categoryId           String
+  category             Category        @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  tags                 TutorialTag[]
+  favorites            Favorite[]
+  clicks               TutorialClick[]
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+
+  @@index([status, featured, sortOrder])
+  @@index([categoryId, status])
+  @@index([publishedAt])
+}
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  slug        String     @unique
+  description String?
+  sortOrder   Int        @default(0)
+  tutorials   Tutorial[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Tag {
+  id        String        @id @default(cuid())
+  name      String        @unique
+  slug      String        @unique
+  tutorials TutorialTag[]
+  createdAt DateTime      @default(now())
+}
+
+model TutorialTag {
+  tutorialId String
+  tagId      String
+  tutorial   Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
+  tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([tutorialId, tagId])
+}
+
+model Favorite {
+  userId     String
+  tutorialId String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tutorial   Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@id([userId, tutorialId])
+  @@index([tutorialId])
+}
+
+model TutorialClick {
+  id         String   @id @default(cuid())
+  tutorialId String
+  tutorial   Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
+  userId     String?
+  ipHash     String?
+  createdAt  DateTime @default(now())
+
+  @@index([tutorialId, createdAt])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId, expiresAt])
+}
